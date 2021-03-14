@@ -1,9 +1,13 @@
+from requests.api import head
+
+
 class Player:
     def __init__(self):
         self.damage = Damage()
         self.game = Game()
         self.agents = [ Agent(), Agent(), Agent() ]
         self.accuracy = Accuracy()
+        self.weapons = [ Weapon(), Weapon(), Weapon() ]
 
     
 class Damage:
@@ -44,3 +48,11 @@ class Accuracy:
     body = None
     legRate = None
     leg = None
+
+class Weapon:
+    name = None
+    type = None
+    headRate = None
+    bodyRate = None
+    legRate = None
+    kills = None

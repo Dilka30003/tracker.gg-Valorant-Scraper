@@ -74,6 +74,21 @@ player.accuracy.body = int(stats[1][1].text)
 player.accuracy.legRate = float(stats[2][0].text[:-1])
 player.accuracy.leg = int(stats[2][1].text)
 
+weapon_stats = results.find('div', class_='top-weapons__weapons')
+weapons = results.find_all('div', class_='weapon')
+for i in range(len(weapons)):
+    weapon = weapons[i]
+    player.weapons[i].name = weapon.find('div', class_='weapon__name').text
+    player.weapons[i].type = weapon.find('div', class_='weapon__type').text
+    stats = weapon.find_all('span', class_='stat')
+    player.weapons[i].headRate = int(stats[0].text[:-1])
+    player.weapons[i].bodyRate = int(stats[1].text[:-1])
+    player.weapons[i].legRate = int(stats[2].text[:-1])
+    player.weapons[i].kills = int(weapon.find('span', class_='value').text.replace(',', ''))
+    pass
+
+
+
 
 
 print(stats)

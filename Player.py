@@ -25,6 +25,8 @@ class Game:
     clutch = None
     flawless = None
     mostKills = None
+    playtime = None
+    matches = None
 
 class Agent:
     name = None
@@ -33,4 +35,3 @@ class Agent:
     winRate = None
     kd = None
     dmg = None
-    

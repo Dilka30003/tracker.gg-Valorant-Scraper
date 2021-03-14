@@ -3,6 +3,7 @@ class Player:
         self.damage = Damage()
         self.game = Game()
         self.agents = [ Agent(), Agent(), Agent() ]
+        self.accuracy = Accuracy()
 
     
 class Damage:
@@ -35,3 +36,11 @@ class Agent:
     winRate = None
     kd = None
     dmg = None
+
+class Accuracy:
+    headRate = None
+    head = None
+    bodyRate = None
+    body = None
+    legRate = None
+    leg = None

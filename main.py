@@ -44,6 +44,19 @@ player.game.clutch = int(stats[9])
 player.game.flawless = int(stats[10])
 player.game.mostKills = int(stats[11])
 
+agent_stats = results.find('div', class_='top-agents__table-container')
+rows = agent_stats.next.find_all('tr')
+rows.pop(0)
+for i in range(len(rows)):
+    row = rows[i]
+    player.agents[i].name = row.find('span', class_='agent__name').next
+    data = row.find_all('span', class_='name')
+    player.agents[i].time = data[0].next
+    player.agents[i].matches = int(data[1].next)
+    player.agents[i].winRate = float(data[2].next[:-1])
+    player.agents[i].kd = float(data[3].next)
+    player.agents[i].dmg = float(data[4].next)
+
 print(stats)
 
 

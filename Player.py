@@ -2,6 +2,8 @@ class Player:
     def __init__(self):
         self.damage = Damage()
         self.game = Game()
+        self.agents = [ Agent(), Agent(), Agent() ]
+
     
 class Damage:
     dmg = None

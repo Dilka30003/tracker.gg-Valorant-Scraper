@@ -1,9 +1,11 @@
+from typing import Tuple
 import requests
 from bs4 import BeautifulSoup
 import yaml
 from Player import Player
+from PIL import Image, ImageFont, ImageDraw
 
-def GetStats(name:str, tag:str, type:str) -> Player:
+def GetStats(name:str, tag:str, type:str):
     URL = 'https://tracker.gg/valorant/profile/riot/' + name + '%23' + tag + '/overview?playlist=' + type
     page = requests.get(URL)
 
@@ -13,6 +15,17 @@ def GetStats(name:str, tag:str, type:str) -> Player:
     soup = BeautifulSoup(page.content, 'html.parser')
 
     results = soup.find(id='app')
+
+    pageError = results.find_all('div', class_='content content--error')
+    if (len(pageError) >0):
+        if "private" in pageError[0].text.lower():
+            return 1, URL
+        if "404" in pageError[0].text.lower():
+            return 404, None
+
+
+
+
 
     player = Player()                                                                               # Initialise Player
     player.damage.kda = float(results.find_all('span', class_='valorant-highlighted-stat__value')[-1].text) # Get KDA
@@ -51,6 +64,7 @@ def GetStats(name:str, tag:str, type:str) -> Player:
     for i in range(len(rows)):
         row = rows[i]
         player.agents[i].name = row.find('span', class_='agent__name').text
+        player.agents[i].image = Image.open(requests.get(row.find('img').get('src'), stream=True).raw)
         data = row.find_all('span', class_='name')
         player.agents[i].time = data[0].text
         player.agents[i].matches = int(data[1].text)
@@ -88,4 +102,26 @@ def GetStats(name:str, tag:str, type:str) -> Player:
         player.weapons[i].kills = int(weapon.find('span', class_='value').text.replace(',', ''))
         pass
 
-    return player
+    return 0, player
+
+def GenerateGraphic(player:Player) -> Image:
+    img = Image.new('RGBA', (1920, 1200), (255, 0, 0, 0))
+    timeFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 100)
+    subtextFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 70)
+    MARGIN = 10
+
+    for i in range(3):
+        agent = player.agents[i]
+        img.paste(agent.image, (10, i*(156+256)), agent.image)
+        draw = ImageDraw.Draw(img)
+        draw.text((MARGIN, i*(156+agent.image.width) + agent.image.height),agent.time,(200,200,200),font=timeFont)
+        draw.text((MARGIN + agent.image.width + 10, i*(156+agent.image.height) + 36),str(agent.matches) + " Matches",(255,255,255),font=timeFont)
+        draw.text((MARGIN + agent.image.width + 10, i*(156+agent.image.height) + 154),str(agent.winRate) + "% Win Rate",(255,255,255),font=timeFont)
+        draw.text((MARGIN + agent.image.width + 10 + 800, i*(156+agent.image.height) + 36),str(agent.kd) + " K/D",(255,255,255),font=timeFont)
+        draw.text((MARGIN + agent.image.width + 10 + 800, i*(156+agent.image.height) + 154),str(agent.dmg) + " Dmg/Round",(255,255,255),font=timeFont)
+        
+
+    img.save('test.png', 'PNG')
+    return img
+    
+

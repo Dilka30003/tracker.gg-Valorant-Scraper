@@ -35,6 +35,7 @@ class Game:
 
 class Agent:
     name = None
+    image = None
     time = None
     matches = None
     winRate = None

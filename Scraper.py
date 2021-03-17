@@ -1,3 +1,4 @@
+from os import name
 from typing import Tuple
 import requests
 from bs4 import BeautifulSoup
@@ -94,6 +95,7 @@ def GetStats(name:str, tag:str, type:str):
     for i in range(len(weapons)):
         weapon = weapons[i]
         player.weapons[i].name = weapon.find('div', class_='weapon__name').text
+        player.weapons[i].image = Image.open(requests.get(weapon.find('img').get('src'), stream=True).raw)
         player.weapons[i].type = weapon.find('div', class_='weapon__type').text
         stats = weapon.find_all('span', class_='stat')
         player.weapons[i].headRate = int(stats[0].text[:-1])
@@ -104,7 +106,7 @@ def GetStats(name:str, tag:str, type:str):
 
     return 0, player
 
-def GenerateGraphic(player:Player) -> Image:
+def GenerateAgentGraphic(player:Player) -> Image:
     img = Image.new('RGBA', (1920, 1200), (255, 0, 0, 0))
     timeFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 100)
     subtextFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 70)
@@ -112,7 +114,7 @@ def GenerateGraphic(player:Player) -> Image:
 
     for i in range(3):
         agent = player.agents[i]
-        img.paste(agent.image, (10, i*(156+256)), agent.image)
+        img.paste(agent.image, (MARGIN, i*(156+256)), agent.image)
         draw = ImageDraw.Draw(img)
         draw.text((MARGIN, i*(156+agent.image.width) + agent.image.height),agent.time,(200,200,200),font=timeFont)
         draw.text((MARGIN + agent.image.width + 10, i*(156+agent.image.height) + 36),str(agent.matches) + " Matches",(255,255,255),font=timeFont)
@@ -120,8 +122,35 @@ def GenerateGraphic(player:Player) -> Image:
         draw.text((MARGIN + agent.image.width + 10 + 800, i*(156+agent.image.height) + 36),str(agent.kd) + " K/D",(255,255,255),font=timeFont)
         draw.text((MARGIN + agent.image.width + 10 + 800, i*(156+agent.image.height) + 154),str(agent.dmg) + " Dmg/Round",(255,255,255),font=timeFont)
         
-
-    img.save('test.png', 'PNG')
     return img
     
+def GenerateWeaponGraphic(player:Player) -> Image:
+    img = Image.new('RGBA', (1000, 1200), (255, 0, 0, 0))
+    nameFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 100)
+    typeFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 60)
+    headerFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 60)
+    MARGIN = 10
 
+    weaponHeight = player.weapons[0].image.height + player.weapons[1].image.height + player.weapons[2].image.height
+    spacing = (img.height - weaponHeight)/2 - 90
+    positions = []
+    positions.append(0)
+    positions.append(player.weapons[0].image.height + spacing)
+    positions.append(positions[1] + player.weapons[1].image.height + spacing)
+
+    for i in range(3):
+        weapon = player.weapons[i]
+        img.paste(weapon.image, (MARGIN, int(positions[i])), weapon.image)
+        draw = ImageDraw.Draw(img)
+        draw.text((MARGIN+50, positions[i] + weapon.image.height + 10), weapon.name,(150,150,150),font=nameFont)
+        draw.text((MARGIN+50, positions[i] + weapon.image.height + 100 + 20), weapon.type,(150,150,150),font=typeFont)
+        draw.text((MARGIN+weapon.image.width + 30, positions[i]), "Headshot: " + str(weapon.headRate) + "%",(255,255,255),font=headerFont)
+        draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70), "Bodyshot: " + str(weapon.bodyRate) + "%",(255,255,255),font=headerFont)
+        draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70*2), "Legshot: " + str(weapon.legRate) + "%",(255,255,255),font=headerFont)
+        draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70*3), "Kills: " + str(weapon.kills) + "%",(255,255,255),font=headerFont)
+
+
+
+
+
+    return img

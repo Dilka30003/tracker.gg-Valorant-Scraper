@@ -52,6 +52,7 @@ class Accuracy:
 
 class Weapon:
     name = None
+    image = None
     type = None
     headRate = None
     bodyRate = None

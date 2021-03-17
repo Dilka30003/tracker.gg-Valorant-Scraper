@@ -108,8 +108,8 @@ def GetStats(name:str, tag:str, type:str):
 
 def GenerateAgentGraphic(player:Player) -> Image:
     img = Image.new('RGBA', (1920, 1200), (255, 0, 0, 0))
-    timeFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 100)
-    subtextFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 70)
+    timeFont = ImageFont.truetype("Roboto/Roboto-Medium.ttf", 100)
+    subtextFont = ImageFont.truetype("Roboto/Roboto-Medium.ttf", 70)
     MARGIN = 10
 
     for i in range(3):
@@ -126,9 +126,9 @@ def GenerateAgentGraphic(player:Player) -> Image:
     
 def GenerateWeaponGraphic(player:Player) -> Image:
     img = Image.new('RGBA', (1000, 1200), (255, 0, 0, 0))
-    nameFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 100)
-    typeFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 60)
-    headerFont = ImageFont.truetype("Roboto\Roboto-Medium.ttf", 60)
+    nameFont = ImageFont.truetype("Roboto/Roboto-Medium.ttf", 100)
+    typeFont = ImageFont.truetype("Roboto/Roboto-Medium.ttf", 60)
+    headerFont = ImageFont.truetype("Roboto/Roboto-Medium.ttf", 60)
     MARGIN = 10
 
     weaponHeight = player.weapons[0].image.height + player.weapons[1].image.height + player.weapons[2].image.height
@@ -142,12 +142,12 @@ def GenerateWeaponGraphic(player:Player) -> Image:
         weapon = player.weapons[i]
         img.paste(weapon.image, (MARGIN, int(positions[i])), weapon.image)
         draw = ImageDraw.Draw(img)
-        draw.text((MARGIN+50, positions[i] + weapon.image.height + 10), weapon.name,(150,150,150),font=nameFont)
-        draw.text((MARGIN+50, positions[i] + weapon.image.height + 100 + 20), weapon.type,(150,150,150),font=typeFont)
+        draw.text((MARGIN+50, positions[i] + weapon.image.height + 10), weapon.name,(200,200,200),font=nameFont)
+        draw.text((MARGIN+50, positions[i] + weapon.image.height + 100 + 20), weapon.type,(200,200,200),font=typeFont)
         draw.text((MARGIN+weapon.image.width + 30, positions[i]), "Headshot: " + str(weapon.headRate) + "%",(255,255,255),font=headerFont)
         draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70), "Bodyshot: " + str(weapon.bodyRate) + "%",(255,255,255),font=headerFont)
         draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70*2), "Legshot: " + str(weapon.legRate) + "%",(255,255,255),font=headerFont)
-        draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70*3), "Kills: " + str(weapon.kills) + "%",(255,255,255),font=headerFont)
+        draw.text((MARGIN+weapon.image.width + 30, positions[i] + 70*3), "Kills: " + str(weapon.kills),(255,255,255),font=headerFont)
 
 
 
